@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.settings import get_settings
 from app.apis.v1 import auth,user
+from app.apis.v1 import ws_chat, chat_history
 from app.database.database import engine
 from sqlmodel import SQLModel
 from sqlmodel import  text
@@ -27,7 +28,8 @@ app.add_middleware(
 # ---------------------------
 app.include_router(auth.router)
 app.include_router(user.router)
-
+app.include_router(ws_chat.router)
+app.include_router(chat_history.router)
 # ---------------------------
 # Startup event
 # ---------------------------

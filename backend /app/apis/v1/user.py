@@ -9,17 +9,17 @@ from app.schema.user_schema import (
     OnboardingResponse,
     OnboardingStatusResponse,
 )
-from app.core.dependencies import get_current_user_id  # assume this exists
+from app.core.dependencies import get_current_auth_id  # assume this exists
 
 router = APIRouter(prefix="/onboarding", tags=["Onboarding"])
 
 @router.get("/status", response_model=OnboardingStatusResponse)
 def onboarding_status(
     db: Session = Depends(get_db),
-    user_id=Depends(get_current_user_id),
+    auth_id=Depends(get_current_auth_id),
 ):
     service = UserService(db)
-    onboarding = service.get_onboarding(user_id)
+    onboarding = service.get_onboarding(auth_id)
 
     return {
         "onboarding_completed": onboarding.onboarding_completed
@@ -29,10 +29,10 @@ def onboarding_status(
 @router.get("", response_model=OnboardingResponse)
 def get_onboarding(
     db: Session = Depends(get_db),
-    user_id=Depends(get_current_user_id),
+    auth_id=Depends(get_current_auth_id),
 ):
     service = UserService(db)
-    onboarding = service.get_onboarding(user_id)
+    onboarding = service.get_onboarding(auth_id)
 
     return onboarding
 
@@ -45,12 +45,12 @@ def get_onboarding(
 def create_onboarding(
     payload: OnboardingCreateRequest,
     db: Session = Depends(get_db),
-    user_id=Depends(get_current_user_id),
+    auth_id=Depends(get_current_auth_id),
 ):
     service = UserService(db)
 
     try:
-        onboarding = service.create_onboarding(user_id, payload)
+        onboarding = service.create_onboarding(auth_id, payload)
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -64,8 +64,8 @@ def create_onboarding(
 def update_onboarding(
     payload: OnboardingUpdateRequest,
     db: Session = Depends(get_db),
-    user_id=Depends(get_current_user_id),
+    auth_id=Depends(get_current_auth_id),
 ):
     service = UserService(db)
-    onboarding = service.update_onboarding(user_id, payload)
+    onboarding = service.update_onboarding(auth_id, payload)
     return onboarding

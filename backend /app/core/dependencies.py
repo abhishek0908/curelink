@@ -13,16 +13,16 @@ def get_db():
     with Session(engine) as session:
         yield session
 
-def get_current_user_id(
+def get_current_auth_id(
     credentials: HTTPAuthorizationCredentials = Depends(security),
 ) -> UUID:
     token = credentials.credentials
-    user_id = jwt_handler.get_subject(token)
+    auth_id = jwt_handler.get_subject(token)
 
-    if not user_id:
+    if not auth_id:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
 
-    return UUID(user_id)
+    return UUID(auth_id)

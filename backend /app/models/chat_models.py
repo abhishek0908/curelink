@@ -2,8 +2,8 @@
 from sqlmodel import SQLModel, Field, Relationship
 from datetime import datetime
 from typing import Optional
-from app.models.user_model import UserOnboarding
-from app.utility.role_enum import ChatRole
+from uuid import UUID
+import uuid
 
 
 class ChatMessage(SQLModel, table=True):
@@ -11,35 +11,44 @@ class ChatMessage(SQLModel, table=True):
 
     id: Optional[int] = Field(default=None, primary_key=True)
 
-    user_id: int = Field(
+    user_id: UUID = Field(
         foreign_key="user_onboarding.id",
-        index=True
+        index=True,
+        nullable=False
     )
-
-    role: ChatRole = Field(
-        nullable=False,
-        description="sender of the message: user or assistant"
-    )
-
+    role: str = Field(nullable=False)
     message: str
-
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    user: Optional[UserOnboarding] = Relationship(
-        back_populates="chat_messages"
-    )
+    user: Optional["UserOnboarding"] = Relationship(back_populates="chat_messages")
+
+
+
+# app/models/chat_model.py (continued)
+from sqlmodel import SQLModel, Field, Relationship
+from datetime import datetime
+from typing import Optional
+from uuid import UUID
+import uuid
 
 
 class UserSummary(SQLModel, table=True):
     __tablename__ = "user_summary"
-    id: str = Field(
-        default_factory=lambda: str(uuid.uuid4()),
+
+    id: UUID = Field(
+        default_factory=uuid.uuid4,
         primary_key=True,
         index=True
     )
-    user_id: int = Field(foreign_key="user_onboarding.id", index=True)
-    short_summary: str
-    long_summary: str
+    user_id: UUID = Field(
+        foreign_key="user_onboarding.id",
+        unique=True,
+        nullable=False,
+        index=True
+    )
+    last_summarized_message_id: Optional[int] = None
+    short_summary: Optional[str] = None
+    long_summary: Optional[str] = None
     updated_at: datetime = Field(default_factory=datetime.utcnow)
 
-    user: Optional[UserOnboarding] = Relationship(back_populates="user_summary")
+    user: Optional["UserOnboarding"] = Relationship(back_populates="summary")

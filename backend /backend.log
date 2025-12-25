@@ -1,0 +1,460 @@
+nohup: ignoring input
+INFO:     Will watch for changes in these directories: ['/home/abhishekudiya/Documents/curelink/backend ']
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process [36023] using WatchFiles
+INFO:     Started server process [36026]
+INFO:     Waiting for application startup.
+2025-12-26 03:41:06,441 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-12-26 03:41:06,441 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:41:06,442 INFO sqlalchemy.engine.Engine select current_schema()
+2025-12-26 03:41:06,442 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:41:06,442 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-12-26 03:41:06,442 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:41:06,442 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:41:06,445 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:41:06,445 INFO sqlalchemy.engine.Engine [generated in 0.00017s] {'table_name': 'auth_users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:41:06,446 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:41:06,446 INFO sqlalchemy.engine.Engine [cached since 0.001282s ago] {'table_name': 'user_onboarding', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:41:06,447 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:41:06,447 INFO sqlalchemy.engine.Engine [cached since 0.001739s ago] {'table_name': 'chat_messages', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:41:06,447 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:41:06,447 INFO sqlalchemy.engine.Engine [cached since 0.002145s ago] {'table_name': 'user_summary', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:41:06,447 INFO sqlalchemy.engine.Engine COMMIT
+2025-12-26 03:41:06,448 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:41:06,448 INFO sqlalchemy.engine.Engine SELECT 1
+2025-12-26 03:41:06,448 INFO sqlalchemy.engine.Engine [generated in 0.00014s] {}
+2025-12-26 03:41:06,448 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     Application startup complete.
+INFO:     127.0.0.1:40488 - "WebSocket /ws/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjOGI2MjRiMi0zMGY2LTQzYTUtYmJiMy05YjJmZDRiZjYxMTciLCJleHAiOjE3NjY3MDIyODAsImlhdCI6MTc2NjcwMDQ4MH0.BbIvK7lTT4UL7xw7SGgyr6enWWEeKh2FDbY9shnLolA" [accepted]
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 145, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 142, in app
+    await func(session)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 509, in app
+    await dependant.call(**solved_result.values)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 32, in ws_chat_endpoint
+    await chat_websocket(websocket, auth_id, background_tasks)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 39, in chat_websocket
+    chat_service = ChatService(
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/chat_service/chat_service.py", line 20, in __init__
+    self.memory = MemoryService(db, redis_service)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/memory_service/memory_service.py", line 26, in __init__
+    self.llm = ChatOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_core/load/serializable.py", line 116, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/pydantic/main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_openai/chat_models/base.py", line 990, in validate_environment
+    self.root_async_client = openai.AsyncOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/openai/_client.py", line 488, in __init__
+    raise OpenAIError(
+openai.OpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:40510 - "WebSocket /ws/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjOGI2MjRiMi0zMGY2LTQzYTUtYmJiMy05YjJmZDRiZjYxMTciLCJleHAiOjE3NjY3MDIyODAsImlhdCI6MTc2NjcwMDQ4MH0.BbIvK7lTT4UL7xw7SGgyr6enWWEeKh2FDbY9shnLolA" [accepted]
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 145, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 142, in app
+    await func(session)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 509, in app
+    await dependant.call(**solved_result.values)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 32, in ws_chat_endpoint
+    await chat_websocket(websocket, auth_id, background_tasks)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 39, in chat_websocket
+    chat_service = ChatService(
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/chat_service/chat_service.py", line 20, in __init__
+    self.memory = MemoryService(db, redis_service)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/memory_service/memory_service.py", line 26, in __init__
+    self.llm = ChatOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_core/load/serializable.py", line 116, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/pydantic/main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_openai/chat_models/base.py", line 990, in validate_environment
+    self.root_async_client = openai.AsyncOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/openai/_client.py", line 488, in __init__
+    raise OpenAIError(
+openai.OpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+INFO:     connection open
+INFO:     connection closed
+✅ Database connected successfully
+2025-12-26 03:41:16,150 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:41:16,170 INFO sqlalchemy.engine.Engine SELECT user_onboarding.id, user_onboarding.auth_user_id, user_onboarding.full_name, user_onboarding.age, user_onboarding.gender, user_onboarding.previous_diseases, user_onboarding.current_symptoms, user_onboarding.medications, user_onboarding.allergies, user_onboarding.additional_notes, user_onboarding.onboarding_completed 
+FROM user_onboarding 
+WHERE user_onboarding.auth_user_id = %(auth_user_id_1)s::UUID
+2025-12-26 03:41:16,170 INFO sqlalchemy.engine.Engine [generated in 0.00056s] {'auth_user_id_1': UUID('c8b624b2-30f6-43a5-bbb3-9b2fd4bf6117')}
+2025-12-26 03:41:16,201 INFO sqlalchemy.engine.Engine SELECT chat_messages.id, chat_messages.user_id, chat_messages.role, chat_messages.message, chat_messages.created_at 
+FROM chat_messages 
+WHERE chat_messages.user_id = %(user_id_1)s::UUID ORDER BY chat_messages.id DESC 
+ LIMIT %(param_1)s OFFSET %(param_2)s
+2025-12-26 03:41:16,203 INFO sqlalchemy.engine.Engine [generated in 0.00168s] {'user_id_1': UUID('9ee86ec9-51d2-46e2-bf61-f018977a9119'), 'param_1': 20, 'param_2': 0}
+INFO:     127.0.0.1:40504 - "GET /chat/history?limit=20&offset=0 HTTP/1.1" 200 OK
+2025-12-26 03:41:16,211 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-12-26 03:41:16,232 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:41:16,232 INFO sqlalchemy.engine.Engine SELECT user_onboarding.id, user_onboarding.auth_user_id, user_onboarding.full_name, user_onboarding.age, user_onboarding.gender, user_onboarding.previous_diseases, user_onboarding.current_symptoms, user_onboarding.medications, user_onboarding.allergies, user_onboarding.additional_notes, user_onboarding.onboarding_completed 
+FROM user_onboarding 
+WHERE user_onboarding.auth_user_id = %(auth_user_id_1)s::UUID
+2025-12-26 03:41:16,233 INFO sqlalchemy.engine.Engine [cached since 0.06294s ago] {'auth_user_id_1': UUID('c8b624b2-30f6-43a5-bbb3-9b2fd4bf6117')}
+2025-12-26 03:41:16,237 INFO sqlalchemy.engine.Engine SELECT chat_messages.id, chat_messages.user_id, chat_messages.role, chat_messages.message, chat_messages.created_at 
+FROM chat_messages 
+WHERE chat_messages.user_id = %(user_id_1)s::UUID ORDER BY chat_messages.id DESC 
+ LIMIT %(param_1)s OFFSET %(param_2)s
+2025-12-26 03:41:16,237 INFO sqlalchemy.engine.Engine [cached since 0.0361s ago] {'user_id_1': UUID('9ee86ec9-51d2-46e2-bf61-f018977a9119'), 'param_1': 20, 'param_2': 0}
+INFO:     127.0.0.1:40504 - "GET /chat/history?limit=20&offset=0 HTTP/1.1" 200 OK
+2025-12-26 03:41:16,243 INFO sqlalchemy.engine.Engine ROLLBACK
+WARNING:  WatchFiles detected changes in 'app/apis/v1/ws_chat.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [36026]
+INFO:     Started server process [36284]
+INFO:     Waiting for application startup.
+2025-12-26 03:42:12,561 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-12-26 03:42:12,562 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:42:12,562 INFO sqlalchemy.engine.Engine select current_schema()
+2025-12-26 03:42:12,562 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:42:12,563 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-12-26 03:42:12,563 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:42:12,563 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:42:12,566 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:42:12,566 INFO sqlalchemy.engine.Engine [generated in 0.00015s] {'table_name': 'auth_users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:42:12,567 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:42:12,567 INFO sqlalchemy.engine.Engine [cached since 0.001671s ago] {'table_name': 'user_onboarding', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:42:12,568 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:42:12,568 INFO sqlalchemy.engine.Engine [cached since 0.002195s ago] {'table_name': 'chat_messages', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:42:12,568 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:42:12,568 INFO sqlalchemy.engine.Engine [cached since 0.002679s ago] {'table_name': 'user_summary', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:42:12,569 INFO sqlalchemy.engine.Engine COMMIT
+2025-12-26 03:42:12,569 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:42:12,569 INFO sqlalchemy.engine.Engine SELECT 1
+2025-12-26 03:42:12,569 INFO sqlalchemy.engine.Engine [generated in 0.00012s] {}
+2025-12-26 03:42:12,570 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     Application startup complete.
+INFO:     127.0.0.1:59042 - "WebSocket /ws/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjOGI2MjRiMi0zMGY2LTQzYTUtYmJiMy05YjJmZDRiZjYxMTciLCJleHAiOjE3NjY3MDIyODAsImlhdCI6MTc2NjcwMDQ4MH0.BbIvK7lTT4UL7xw7SGgyr6enWWEeKh2FDbY9shnLolA" [accepted]
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 145, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 142, in app
+    await func(session)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 509, in app
+    await dependant.call(**solved_result.values)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 33, in ws_chat_endpoint
+    await chat_websocket(websocket, auth_id, background_tasks)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 40, in chat_websocket
+    chat_service = ChatService(
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/chat_service/chat_service.py", line 20, in __init__
+    self.memory = MemoryService(db, redis_service)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/memory_service/memory_service.py", line 26, in __init__
+    self.llm = ChatOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_core/load/serializable.py", line 116, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/pydantic/main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_openai/chat_models/base.py", line 990, in validate_environment
+    self.root_async_client = openai.AsyncOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/openai/_client.py", line 488, in __init__
+    raise OpenAIError(
+openai.OpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+INFO:     connection open
+INFO:     connection closed
+INFO:     127.0.0.1:59064 - "WebSocket /ws/chat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjOGI2MjRiMi0zMGY2LTQzYTUtYmJiMy05YjJmZDRiZjYxMTciLCJleHAiOjE3NjY3MDIyODAsImlhdCI6MTc2NjcwMDQ4MH0.BbIvK7lTT4UL7xw7SGgyr6enWWEeKh2FDbY9shnLolA" [accepted]
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/protocols/websockets/websockets_impl.py", line 244, in run_asgi
+    result = await self.app(self.scope, self.asgi_receive, self.asgi_send)  # type: ignore[func-returns-value]
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py", line 60, in __call__
+    return await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/applications.py", line 1135, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/applications.py", line 107, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/errors.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/cors.py", line 77, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 716, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 736, in app
+    await route.handle(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/routing.py", line 364, in handle
+    await self.app(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 145, in app
+    await wrap_app_handling_exceptions(app, session)(scope, receive, send)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 142, in app
+    await func(session)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/fastapi/routing.py", line 509, in app
+    await dependant.call(**solved_result.values)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 33, in ws_chat_endpoint
+    await chat_websocket(websocket, auth_id, background_tasks)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/apis/v1/ws_chat.py", line 40, in chat_websocket
+    chat_service = ChatService(
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/chat_service/chat_service.py", line 20, in __init__
+    self.memory = MemoryService(db, redis_service)
+  File "/home/abhishekudiya/Documents/curelink/backend /app/services/memory_service/memory_service.py", line 26, in __init__
+    self.llm = ChatOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_core/load/serializable.py", line 116, in __init__
+    super().__init__(*args, **kwargs)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/pydantic/main.py", line 250, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/langchain_openai/chat_models/base.py", line 990, in validate_environment
+    self.root_async_client = openai.AsyncOpenAI(
+  File "/home/abhishekudiya/.local/lib/python3.10/site-packages/openai/_client.py", line 488, in __init__
+    raise OpenAIError(
+openai.OpenAIError: The api_key client option must be set either by passing api_key to the client or by setting the OPENAI_API_KEY environment variable
+INFO:     connection open
+INFO:     connection closed
+✅ Database connected successfully
+DEBUG: ws_chat_endpoint triggered
+DEBUG: ws_chat_endpoint triggered
+2025-12-26 03:42:26,814 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:42:26,831 INFO sqlalchemy.engine.Engine SELECT user_onboarding.id, user_onboarding.auth_user_id, user_onboarding.full_name, user_onboarding.age, user_onboarding.gender, user_onboarding.previous_diseases, user_onboarding.current_symptoms, user_onboarding.medications, user_onboarding.allergies, user_onboarding.additional_notes, user_onboarding.onboarding_completed 
+FROM user_onboarding 
+WHERE user_onboarding.auth_user_id = %(auth_user_id_1)s::UUID
+2025-12-26 03:42:26,832 INFO sqlalchemy.engine.Engine [generated in 0.00038s] {'auth_user_id_1': UUID('c8b624b2-30f6-43a5-bbb3-9b2fd4bf6117')}
+2025-12-26 03:42:26,854 INFO sqlalchemy.engine.Engine SELECT chat_messages.id, chat_messages.user_id, chat_messages.role, chat_messages.message, chat_messages.created_at 
+FROM chat_messages 
+WHERE chat_messages.user_id = %(user_id_1)s::UUID ORDER BY chat_messages.id DESC 
+ LIMIT %(param_1)s OFFSET %(param_2)s
+2025-12-26 03:42:26,854 INFO sqlalchemy.engine.Engine [generated in 0.00052s] {'user_id_1': UUID('9ee86ec9-51d2-46e2-bf61-f018977a9119'), 'param_1': 20, 'param_2': 0}
+INFO:     127.0.0.1:59052 - "GET /chat/history?limit=20&offset=0 HTTP/1.1" 200 OK
+2025-12-26 03:42:26,871 INFO sqlalchemy.engine.Engine ROLLBACK
+2025-12-26 03:42:26,878 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:42:26,879 INFO sqlalchemy.engine.Engine SELECT user_onboarding.id, user_onboarding.auth_user_id, user_onboarding.full_name, user_onboarding.age, user_onboarding.gender, user_onboarding.previous_diseases, user_onboarding.current_symptoms, user_onboarding.medications, user_onboarding.allergies, user_onboarding.additional_notes, user_onboarding.onboarding_completed 
+FROM user_onboarding 
+WHERE user_onboarding.auth_user_id = %(auth_user_id_1)s::UUID
+2025-12-26 03:42:26,879 INFO sqlalchemy.engine.Engine [cached since 0.048s ago] {'auth_user_id_1': UUID('c8b624b2-30f6-43a5-bbb3-9b2fd4bf6117')}
+2025-12-26 03:42:26,882 INFO sqlalchemy.engine.Engine SELECT chat_messages.id, chat_messages.user_id, chat_messages.role, chat_messages.message, chat_messages.created_at 
+FROM chat_messages 
+WHERE chat_messages.user_id = %(user_id_1)s::UUID ORDER BY chat_messages.id DESC 
+ LIMIT %(param_1)s OFFSET %(param_2)s
+2025-12-26 03:42:26,882 INFO sqlalchemy.engine.Engine [cached since 0.02813s ago] {'user_id_1': UUID('9ee86ec9-51d2-46e2-bf61-f018977a9119'), 'param_1': 20, 'param_2': 0}
+INFO:     127.0.0.1:59052 - "GET /chat/history?limit=20&offset=0 HTTP/1.1" 200 OK
+2025-12-26 03:42:26,889 INFO sqlalchemy.engine.Engine ROLLBACK
+WARNING:  WatchFiles detected changes in 'app/apis/v1/__init__.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [36284]
+INFO:     Started server process [36782]
+INFO:     Waiting for application startup.
+2025-12-26 03:43:59,338 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-12-26 03:43:59,338 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:43:59,339 INFO sqlalchemy.engine.Engine select current_schema()
+2025-12-26 03:43:59,339 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:43:59,339 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-12-26 03:43:59,339 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:43:59,340 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:43:59,346 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:43:59,346 INFO sqlalchemy.engine.Engine [generated in 0.00038s] {'table_name': 'auth_users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:43:59,348 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:43:59,348 INFO sqlalchemy.engine.Engine [cached since 0.002286s ago] {'table_name': 'user_onboarding', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:43:59,349 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:43:59,349 INFO sqlalchemy.engine.Engine [cached since 0.003169s ago] {'table_name': 'chat_messages', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:43:59,349 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:43:59,349 INFO sqlalchemy.engine.Engine [cached since 0.003829s ago] {'table_name': 'user_summary', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:43:59,350 INFO sqlalchemy.engine.Engine COMMIT
+2025-12-26 03:43:59,351 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:43:59,351 INFO sqlalchemy.engine.Engine SELECT 1
+2025-12-26 03:43:59,351 INFO sqlalchemy.engine.Engine [generated in 0.00019s] {}
+2025-12-26 03:43:59,351 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'app/services/memory_service/memory_service.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [36782]
+WARNING:  WatchFiles detected changes in 'app/apis/v1/ws_chat.py', 'app/services/chat_service/chat_service.py'. Reloading...
+WARNING:  WatchFiles detected changes in 'app/apis/v1/ws_chat.py'. Reloading...
+INFO:     Started server process [37074]
+INFO:     Waiting for application startup.
+2025-12-26 03:49:09,385 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-12-26 03:49:09,385 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:49:09,386 INFO sqlalchemy.engine.Engine select current_schema()
+2025-12-26 03:49:09,386 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:49:09,387 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-12-26 03:49:09,387 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:49:09,388 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:49:09,391 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:09,391 INFO sqlalchemy.engine.Engine [generated in 0.00020s] {'table_name': 'auth_users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:09,399 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:09,399 INFO sqlalchemy.engine.Engine [cached since 0.008516s ago] {'table_name': 'user_onboarding', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:09,400 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:09,400 INFO sqlalchemy.engine.Engine [cached since 0.009317s ago] {'table_name': 'chat_messages', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:09,401 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:09,401 INFO sqlalchemy.engine.Engine [cached since 0.009922s ago] {'table_name': 'user_summary', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:09,401 INFO sqlalchemy.engine.Engine COMMIT
+2025-12-26 03:49:09,403 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:49:09,403 INFO sqlalchemy.engine.Engine SELECT 1
+2025-12-26 03:49:09,403 INFO sqlalchemy.engine.Engine [generated in 0.00019s] {}
+2025-12-26 03:49:09,403 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     Application startup complete.
+INFO:     Started server process [37124]
+INFO:     Waiting for application startup.
+2025-12-26 03:49:12,444 INFO sqlalchemy.engine.Engine select pg_catalog.version()
+2025-12-26 03:49:12,444 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:49:12,446 INFO sqlalchemy.engine.Engine select current_schema()
+2025-12-26 03:49:12,446 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:49:12,446 INFO sqlalchemy.engine.Engine show standard_conforming_strings
+2025-12-26 03:49:12,447 INFO sqlalchemy.engine.Engine [raw sql] {}
+2025-12-26 03:49:12,447 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:49:12,452 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:12,453 INFO sqlalchemy.engine.Engine [generated in 0.00060s] {'table_name': 'auth_users', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:12,456 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:12,456 INFO sqlalchemy.engine.Engine [cached since 0.004221s ago] {'table_name': 'user_onboarding', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:12,458 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:12,458 INFO sqlalchemy.engine.Engine [cached since 0.006342s ago] {'table_name': 'chat_messages', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:12,459 INFO sqlalchemy.engine.Engine SELECT pg_catalog.pg_class.relname 
+FROM pg_catalog.pg_class JOIN pg_catalog.pg_namespace ON pg_catalog.pg_namespace.oid = pg_catalog.pg_class.relnamespace 
+WHERE pg_catalog.pg_class.relname = %(table_name)s AND pg_catalog.pg_class.relkind = ANY (ARRAY[%(param_1)s, %(param_2)s, %(param_3)s, %(param_4)s, %(param_5)s]) AND pg_catalog.pg_table_is_visible(pg_catalog.pg_class.oid) AND pg_catalog.pg_namespace.nspname != %(nspname_1)s
+2025-12-26 03:49:12,459 INFO sqlalchemy.engine.Engine [cached since 0.007392s ago] {'table_name': 'user_summary', 'param_1': 'r', 'param_2': 'p', 'param_3': 'f', 'param_4': 'v', 'param_5': 'm', 'nspname_1': 'pg_catalog'}
+2025-12-26 03:49:12,460 INFO sqlalchemy.engine.Engine COMMIT
+2025-12-26 03:49:12,462 INFO sqlalchemy.engine.Engine BEGIN (implicit)
+2025-12-26 03:49:12,462 INFO sqlalchemy.engine.Engine SELECT 1
+2025-12-26 03:49:12,462 INFO sqlalchemy.engine.Engine [generated in 0.00029s] {}
+2025-12-26 03:49:12,463 INFO sqlalchemy.engine.Engine ROLLBACK
+INFO:     Application startup complete.

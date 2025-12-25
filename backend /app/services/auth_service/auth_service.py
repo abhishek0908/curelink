@@ -25,28 +25,24 @@ class AuthService:
             with self.db.begin():  # 🔐 START TRANSACTION
 
                 stmt = select(AuthUser).where(AuthUser.email == email)
-                user = self.db.exec(stmt).first()
+                auth_user = self.db.exec(stmt).first()
 
-                if not user:
-                    user = AuthUser(
+                if not auth_user:
+                    auth_user = AuthUser(
                         email=email,
                         is_verified=False,
                         created_at=datetime.utcnow(),
                     )
-                    self.db.add(user)
+                    self.db.add(auth_user)
                     self.db.flush()  
-                    # 👆 flush assigns user.id WITHOUT committing
 
-                    # Create onboarding/profile in SAME transaction
-                    profile = self.user_service.ensure_user_state(user.id)
+                    profile = self.user_service.ensure_user_state(auth_user.id)
 
                 else:
-                    profile = self.user_service.ensure_user_state(user.id)
-
-            # 🔓 COMMIT happens automatically here if no error
+                    profile = self.user_service.ensure_user_state(auth_user.id)
 
         except Exception as e:
-            # ❌ Any error → full rollback
+            print(e)
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Login failed, please try again",
@@ -54,13 +50,13 @@ class AuthService:
 
         # ✅ Safe to generate token AFTER transaction
         access_token = jwt_handler.create_access_token(
-            subject=str(user.id)
+            subject=str(auth_user.id)
         )
 
         return AuthResponse(
             access_token=access_token,
-            user_id=str(user.id),
-            user_email=user.email,
-            is_verified=user.is_verified,
+            user_id=str(auth_user.id),
+            user_email=auth_user.email,
+            is_verified=auth_user.is_verified,
             onboarding_completed=profile.onboarding_completed,
         )

@@ -5,11 +5,15 @@ from sqlalchemy import pool
 from app.database.database import engine  # adjust path
 from alembic import context
 from sqlmodel import SQLModel
-from app.models import auth_models,user_model,chat_models 
+from app.models.auth_models import AuthUser
+from app.models.user_model import UserOnboarding
+from app.models.chat_models import ChatMessage, UserSummary
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
 
+from sqlmodel import SQLModel
+print("METADATA TABLES:", SQLModel.metadata.tables.keys())
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.
 if config.config_file_name is not None:
