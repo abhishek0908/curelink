@@ -20,8 +20,7 @@ class UserService:
         if not onboarding:
             onboarding = UserOnboarding(user_id=user_id)
             self.db.add(onboarding)
-            self.db.commit()
-            self.db.refresh(onboarding)
+            self.db.flush()   # ✅ get ID if needed
 
         return onboarding
 
@@ -38,7 +37,7 @@ class UserService:
             setattr(onboarding, key, value)
 
         onboarding.onboarding_completed = True
-
+        print(onboarding)
         self.db.add(onboarding)
         self.db.commit()
         self.db.refresh(onboarding)
@@ -50,6 +49,8 @@ class UserService:
 
         for key, value in data.model_dump(exclude_unset=True).items():
             setattr(onboarding, key, value)
+
+        onboarding.onboarding_completed = True
 
         self.db.add(onboarding)
         self.db.commit()

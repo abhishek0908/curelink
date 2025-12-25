@@ -5,7 +5,7 @@ from sqlalchemy import pool
 from app.database.database import engine  # adjust path
 from alembic import context
 from sqlmodel import SQLModel
-from app.models import auth_models,user_model
+from app.models import auth_models,user_model,chat_models 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
