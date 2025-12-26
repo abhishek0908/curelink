@@ -96,7 +96,6 @@ class MemoryService:
         last_msg_id: int,
         auth_id: str,
     ):
-        summary = self._cap_summary(summary)
 
         record = self.get_long_term_summary(user_id)
         if record:
@@ -125,12 +124,9 @@ class MemoryService:
         Called once during chat bootstrap.
         """
         try:
+            # Always refresh context during bootstrap to avoid the "Stale Profile" bug. 
+            # This ensures that if a user updates their symptoms/info, the AI gets the latest data.
             logger.info(f"Loading user context for {auth_id}")
-
-            # Avoid duplicate loading
-            if self.redis.get_user_context(auth_id) is not None:
-                logger.debug(f"User context already loaded for {auth_id}")
-                return
 
             stmt = select(UserOnboarding).where(
                 UserOnboarding.auth_user_id == auth_id
@@ -233,31 +229,29 @@ class MemoryService:
                     f"{m.role}: {m.message}" for m in messages
                 )
 
+                #TODO : As of now we are handling this in memory service but later on we shift this to llm service for single responsibility principle
+                # Note: Prompts are left-aligned to avoid leading whitespace token waste
                 prompt = ChatPromptTemplate.from_messages([
                     (
                         "system",
-                        """
-Your name is disha. You are a long-term medical summary assistant.
+                        """Your name is disha. You are a long-term medical summary assistant.
 
 RULES:
 - Keep under {max_words} words
 - Remove outdated or resolved symptoms
-- Preserve allergies, chronic conditions, and preferences
-- Resolve contradictions
-"""
+- Preserve allergies, chronic conditions, preferences ans some important information that is useful for the user and our memory
+- Resolve contradictions"""
                     ),
                     (
                         "user",
-                        """
-EXISTING SUMMARY:
+                        """EXISTING SUMMARY:
 {old_summary}
 
 NEW MESSAGES:
 {conversation}
 
 OUTPUT:
-Updated summary only.
-"""
+Updated summary only."""
                     )
                 ])
 
@@ -278,7 +272,6 @@ Updated summary only.
                 })
 
                 new_summary = response.content.strip()
-                new_summary = self._cap_summary(new_summary)
                 last_msg_id = messages[-1].id
 
                 # Save to Postgres
@@ -310,10 +303,3 @@ Updated summary only.
             # Always release lock, even on error
             self.redis.release_summary_lock(auth_id)
 
-    # =====================================================
-    # UTIL
-    # =====================================================
-
-    def _cap_summary(self, text: str) -> str:
-        words = text.split()
-        return " ".join(words[:MAX_SUMMARY_WORDS])

@@ -21,9 +21,12 @@ class UserService:
         ).first()
 
         if not onboarding:
+            logger.info(f"Creating default onboarding state for auth_id: {auth_id}")
             onboarding = UserOnboarding(auth_user_id=auth_id)
             self.db.add(onboarding)
-            self.db.flush()   # ✅ get ID if needed
+            self.db.flush()   
+        else:
+            logger.debug(f"Onboarding record found for auth_id: {auth_id}")
 
         return onboarding
 
@@ -46,10 +49,10 @@ class UserService:
         self.db.refresh(onboarding)
 
         return onboarding
-
     def update_onboarding(self, auth_id, data: OnboardingUpdateRequest):
         onboarding = self.ensure_user_state(auth_id)
 
+        logger.info(f"Updating onboarding for user {auth_id}")
         for key, value in data.model_dump(exclude_unset=True).items():
             setattr(onboarding, key, value)
 
@@ -58,5 +61,6 @@ class UserService:
         self.db.add(onboarding)
         self.db.commit()
         self.db.refresh(onboarding)
+        logger.info(f"Onboarding updated successfully for user {auth_id}")
 
         return onboarding

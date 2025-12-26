@@ -7,6 +7,10 @@ from sqlmodel import Session, select
 from app.core.dependencies import get_db, get_current_auth_id
 from app.models.chat_models import ChatMessage
 
+from app.core.logger import get_logger
+
+logger = get_logger(__name__)
+
 router = APIRouter(prefix="/chat", tags=["Chat"])
 
 
@@ -17,6 +21,7 @@ def load_history(
     db: Session = Depends(get_db),
     auth_id: str = Depends(get_current_auth_id) # Using string as it comes from dependency
 ):
+    logger.info(f"Loading chat history for auth_id: {auth_id} (limit: {limit}, offset: {offset})")
     from app.models.user_model import UserOnboarding
     
     try:
@@ -40,6 +45,7 @@ def load_history(
         
         return APIResponse.success_response(data=messages)
     except Exception as e:
+        logger.error(f"Failed to load chat history for {auth_id}: {str(e)}")
         raise AppException(
             code="CHAT_HISTORY_ERROR",
             message=str(e),

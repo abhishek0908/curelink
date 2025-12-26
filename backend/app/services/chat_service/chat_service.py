@@ -29,19 +29,29 @@ class ChatService:
     def validate_user(self, auth_id: str) -> bool:
         return self.get_user(auth_id) is not None
 
-    def bootstrap_context(self, auth_id: str, limit: int = 5) -> None:
+    async def bootstrap_context(self, auth_id: str, limit: int = None) -> None:
+        """
+        Initializes the chat session in Redis. 
+        Clears old cache to prevent duplicates and loads fresh context from DB.
+        """
+        if limit is None:
+            limit = settings.CHAT_CACHE_LIMIT
+
         user = self.get_user(auth_id)
         if not user:
             return
 
         user_id = user.id
 
-        # 1️⃣ Load recent messages into Redis for prompt context
+        # 1️⃣ Clear old chat cache to prevent duplicates on reconnect
+        self.redis.clear_messages(auth_id)
+
+        # 2️⃣ Load recent messages into Redis for prompt context
         stmt = (
             select(ChatMessage)
             .where(ChatMessage.user_id == user_id)
             .order_by(ChatMessage.id.desc())
-            .limit(limit)
+            .limit(settings.CHAT_CACHE_LIMIT)
         )
 
         messages = list(reversed(self.db.exec(stmt).all()))
@@ -50,26 +60,21 @@ class ChatService:
                 auth_id,
                 role=msg.role,
                 content=msg.message,
+                limit=settings.CHAT_CACHE_LIMIT
             )
+
+        # 3️⃣ Sync Summary
         get_long_term_summary = self.memory.get_long_term_summary(user_id)
-        if get_long_term_summary:
-            self.redis.set_summary(
-                auth_id,
-                long_summary=get_long_term_summary.long_summary or "",
-            )
-        else:
-            self.redis.set_summary(
-                auth_id,
-                long_summary="",
-            )
+        self.redis.set_summary(
+            auth_id,
+            long_summary=get_long_term_summary.long_summary if get_long_term_summary else "",
+        )
 
-        # 2️⃣ Sync Long-term summary and unsummarized count into Redis
-        self.memory.initialize_message_count(auth_id=auth_id,user_id=user_id)
+        # 4️⃣ Initialize count & User Context
+        self.memory.initialize_message_count(auth_id=auth_id, user_id=user_id)
+        self.memory.load_user_context(auth_id=auth_id, user_id=user_id)
 
-        # Load User Context into Redis
-        self.memory.load_user_context(auth_id=auth_id,user_id=user_id)
-
-    def handle_message(self, auth_id: str, user_text: str) -> str:
+    async def handle_message(self, auth_id: str, user_text: str) -> str:
         """
         Handle incoming user message, generate AI reply, and trigger summary update if needed.
         """
@@ -96,8 +101,8 @@ class ChatService:
             limit=settings.CHAT_CACHE_LIMIT,
         )
         self.memory.increment_message_count(auth_id)
-
-        ai_reply = self.llm.generate_reply(
+        #TODO : we need to make sure that if we fallback from redis we use postgres as of now we are assuming data availabe in redis
+        ai_reply = await self.llm.generate_reply(
             summary=self.redis.get_summary(auth_id),
             messages=self.redis.get_messages(auth_id),
             user_input=user_text,
@@ -122,9 +127,9 @@ class ChatService:
         )
         self.memory.increment_message_count(auth_id)
 
-        # Use threading instead of BackgroundTasks (which doesn't work with WebSocket)
+        #TODO : Use threading instead of BackgroundTasks (which doesn't work with WebSocket) but we can face issue in  threading in scale so we need to implement using asyncio.to_thread
         if self.memory.should_update_summary(auth_id):
-            logger.info("Triggering summary update in background thread for %s", auth_id)
+            logger.info(f"Triggering summary update in background thread for {auth_id}")
             thread = threading.Thread(
                 target=self.memory.update_summary_with_llm,
                 args=(auth_id, user_id),

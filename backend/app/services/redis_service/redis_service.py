@@ -1,11 +1,13 @@
 import json
 from typing import List, Dict
-import redis
 from uuid import UUID
+from app.core.redis import redis_client
+from app.core.settings import get_settings
 
 class RedisChatService:
-    def __init__(self, client: redis.Redis):
-        self.client = client
+    def __init__(self):
+        self.client = redis_client
+        self.ttl = get_settings().REDIS_CACHE_EXPIRE
 
     def _messages_key(self, auth_id: UUID) -> str:
         return f"chat:{auth_id}:messages"
@@ -35,17 +37,22 @@ class RedisChatService:
         pipe = self.client.pipeline()
         pipe.rpush(key, json.dumps({"role": role, "content": content}))
         pipe.ltrim(key, -limit, -1)
+        pipe.expire(key, self.ttl)
         pipe.execute()
+
+    def clear_messages(self, auth_id: UUID):
+        """Removes the chat cache for a user"""
+        self.client.delete(self._messages_key(auth_id))
 
     # -------- summary --------
     def get_summary(self, auth_id: UUID) -> str:
         return self.client.get(self._summary_key(auth_id)) or ""
 
     def set_summary(self, auth_id: UUID, long_summary: str):
-        self.client.set(self._summary_key(auth_id), long_summary or "")
+        self.client.set(self._summary_key(auth_id), long_summary or "", ex=self.ttl)
 
     def set_user_context(self, auth_id: UUID, context: str):
-        self.client.set(self._user_context_key(auth_id), context)
+        self.client.set(self._user_context_key(auth_id), context, ex=self.ttl)
 
     def get_user_context(self, auth_id: UUID) -> str | None:
         val = self.client.get(self._user_context_key(auth_id))
@@ -56,31 +63,20 @@ class RedisChatService:
     # -------------------------
 
     def init_count(self, auth_id: UUID, count: int):
-        """
-        Called ONCE on WebSocket connection.
-        Initializes Redis count from DB.
-        """
-        self.client.set(self._count_key(auth_id), count)
+        self.client.set(self._count_key(auth_id), count, ex=self.ttl)
 
     def get_count(self, auth_id: UUID) -> int:
-        """
-        Returns current unsummarized message count.
-        """
         value = self.client.get(self._count_key(auth_id))
         return int(value) if value else 0
 
     def incr_count(self, auth_id: UUID) -> int:
-        """
-        Increment count on EVERY new message.
-        Returns updated count.
-        """
-        return self.client.incr(self._count_key(auth_id))
+        key = self._count_key(auth_id)
+        count = self.client.incr(key)
+        self.client.expire(key, self.ttl)
+        return count
 
     def reset_count(self, auth_id: UUID):
-        """
-        Reset count after long-term memory update.
-        """
-        self.client.set(self._count_key(auth_id), 0)
+        self.client.set(self._count_key(auth_id), 0, ex=self.ttl)
 
     # -------------------------
     # DISTRIBUTED LOCKING

@@ -8,7 +8,7 @@ from app.services.llm_service.llm_service import LLMService
 from app.services.chat_service.chat_service import ChatService
 from app.core.dependencies import get_current_auth_id
 from app.core.security import jwt_handler
-from app.schema.chat_schema import WSInfoMessage, WSChatMessage, WSErrorMessage, ChatContextMessage
+from app.schema.chat_schema import WSChatMessage, WSErrorMessage
 from app.core.logger import get_logger
 
 logger = get_logger(__name__)
@@ -19,8 +19,17 @@ router = APIRouter()
 
 @router.websocket("/ws/chat")
 async def ws_chat_endpoint(websocket: WebSocket):
-    # 🔐 Single source of truth for auth
+    # 🔐 Extract token safely
     token = websocket.query_params.get("token")
+    
+    # Check Sec-WebSocket-Protocol header for token (prevents log leakage)
+    if not token:
+        protocols = websocket.headers.get("sec-websocket-protocol")
+        if protocols:
+            # Browser sends "token, <jwt>" or just "<jwt>"
+            # We take the last part if comma separated
+            token = protocols.split(",")[-1].strip()
+
     if not token:
         await websocket.close(code=1008)
         return
@@ -31,46 +40,52 @@ async def ws_chat_endpoint(websocket: WebSocket):
         await websocket.close(code=1008)
         return
 
-    await chat_websocket(websocket, auth_id)
+    # If we got the token from the subprotocol, we must echo it back during accept
+    subprotocol = None
+    if websocket.headers.get("sec-websocket-protocol"):
+        subprotocol = websocket.headers.get("sec-websocket-protocol").split(",")[-1].strip()
+
+    await chat_websocket(websocket, auth_id, subprotocol)
 
 
-async def chat_websocket(websocket: WebSocket, auth_id: str):
-    await websocket.accept()
+async def chat_websocket(websocket: WebSocket, auth_id: str, subprotocol: str = None):
+    await websocket.accept(subprotocol=subprotocol)
 
-    with Session(engine) as db:
-        chat_service = ChatService(
-            db=db,
-            redis_service=RedisChatService(redis_client),
-            llm_service=LLMService()
-        )
+    # Instantiate services that don't depend on the DB session
+    redis_service = RedisChatService()
+    llm_service = LLMService()
 
-        # Optional safety check
-        if not chat_service.validate_user(auth_id):
-            await websocket.close(code=1008)
-            return
-
-        try:
-            # FIRST CONNECTION → load summary + last messages into Redis
-            chat_service.bootstrap_context(auth_id)
-            logger.info(f"User {auth_id} connected, bootstrapping context")
-            
-            # Send cached messages
-            # Convert dicts from redis to pydantic models to ensure validity
-            redis_msgs_data = chat_service.redis.get_messages(auth_id)
-            # Assuming redis_msgs_data is list of dicts consistent with ChatContextMessage
-            
-            await websocket.send_json(
-                WSInfoMessage(
-                    type="history",
-                    messages=[ChatContextMessage(**m) for m in redis_msgs_data]
-                ).model_dump()
+    try:
+        # 1. BOOTSTRAP: Open a temporary session to validate user and load context
+        with Session(engine) as db:
+            chat_service = ChatService(
+                db=db,
+                redis_service=redis_service,
+                llm_service=llm_service
             )
 
-            while True:
-                user_text = await websocket.receive_text()
+            if not chat_service.validate_user(auth_id):
+                await websocket.close(code=1008)
+                return
+
+            # FIRST CONNECTION → load summary + last messages into Redis (for AI context)
+            await chat_service.bootstrap_context(auth_id)
+            logger.info(f"User {auth_id} connected, bootstrapping context complete")
+            
+        # 2. MESSAGE LOOP: Wait for messages and open a fresh session for each
+        while True:
+            user_text = await websocket.receive_text()
+
+            # Open a fresh session for THIS specific message exchange
+            with Session(engine) as db:
+                chat_service = ChatService(
+                    db=db,
+                    redis_service=redis_service,
+                    llm_service=llm_service
+                )
 
                 try:
-                    ai_reply = chat_service.handle_message(
+                    ai_reply = await chat_service.handle_message(
                         auth_id=auth_id,
                         user_text=user_text
                     )
@@ -91,9 +106,9 @@ async def chat_websocket(websocket: WebSocket, auth_id: str):
                         ).model_dump()
                     )
 
-        except WebSocketDisconnect:
-            logger.info(f"User {auth_id} disconnected")
-        except Exception as e:
-            logger.error(f"WebSocket Error for {auth_id}: {e}")
-            await websocket.close(code=1011) # Internal Error
-
+    except WebSocketDisconnect:
+        logger.info(f"User {auth_id} disconnected")
+    except Exception as e:
+        logger.error(f"WebSocket Error for {auth_id}: {e}")
+        if not websocket.client_state.name == "DISCONNECTED":
+            await websocket.close(code=1011)

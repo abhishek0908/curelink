@@ -2,10 +2,9 @@ import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/axios';
 import { Button } from '../components/ui/Button';
-import { ArrowLeft, Send, MoreVertical, Phone, Video } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCheck, Plus, Smile, Mic } from 'lucide-react';
+import { ArrowLeft, Send, MoreVertical, Phone, Video, Check, CheckCheck, Plus, Smile, Mic } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 // Types
@@ -14,7 +13,7 @@ interface Message {
     role: 'user' | 'assistant';
     content: string;
     created_at?: string;
-    type?: 'text'; // future proofing
+    status?: 'sent' | 'delivered';
 }
 
 interface WSMessage {
@@ -65,7 +64,8 @@ const Chat = () => {
                 id: msg.id,
                 role: msg.role,
                 content: msg.message || msg.content,
-                created_at: msg.created_at
+                created_at: msg.created_at,
+                status: 'delivered'
             })).reverse(); // API gives newest first, we want oldest first for chat flow
 
             if (currentOffset === 0) {
@@ -119,21 +119,28 @@ const Chat = () => {
 
             const token = localStorage.getItem('token');
 
-            // Determine WS URL
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-            let wsUrl = '';
+            // 🌐 Determine WS URL dynamically
+            // If VITE_API_URL is absolute, use its host. Otherwise, use current window host.
+            const envApiUrl = import.meta.env.VITE_API_URL;
+            const isSecure = window.location.protocol === 'https:';
+            const wsProtocol = isSecure ? 'wss' : 'ws';
 
-            if (apiUrl.startsWith('http')) {
-                const wsProtocol = apiUrl.startsWith('https') ? 'wss' : 'ws';
-                const wsHost = apiUrl.replace(/^https?:\/\//, '');
-                wsUrl = `${wsProtocol}://${wsHost}/ws/chat?token=${token}`;
+            let wsUrl = '';
+            if (envApiUrl && envApiUrl.startsWith('http')) {
+                // Absolute URL provided (e.g. "https://api.example.com")
+                const wsHost = envApiUrl.replace(/^https?:\/\//, '');
+                // Force WSS if the API URL itself is HTTPS
+                const targetProtocol = envApiUrl.startsWith('https') ? 'wss' : 'ws';
+                wsUrl = `${targetProtocol}://${wsHost}/ws/chat`;
             } else {
-                // Relative URL case (e.g. "/api") - Connect to same host
-                const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
-                wsUrl = `${wsProtocol}://${window.location.host}/ws/chat?token=${token}`;
+                // Production/Relative mode: Use the domain the user is currently on
+                wsUrl = `${wsProtocol}://${window.location.host}/ws/chat`;
             }
 
-            socket = new WebSocket(wsUrl);
+            console.log(`Connecting to WebSocket: ${wsUrl}`);
+
+            // Pass token as subprotocol to avoid leaking it in web server logs
+            socket = new WebSocket(wsUrl, token || "");
 
             socket.onopen = () => {
                 if (!isMounted) return;
@@ -155,9 +162,21 @@ const Chat = () => {
                         id: Date.now(),
                         role: data.role as 'user' | 'assistant',
                         content: data.content as string,
-                        created_at: new Date().toISOString()
+                        created_at: new Date().toISOString(),
+                        status: 'delivered'
                     };
-                    setMessages(prev => [...prev, newMsg]);
+
+                    setMessages(prev => {
+                        // Find the last user message and mark as delivered
+                        const newMessages = [...prev];
+                        for (let i = newMessages.length - 1; i >= 0; i--) {
+                            if (newMessages[i].role === 'user' && newMessages[i].status === 'sent') {
+                                newMessages[i] = { ...newMessages[i], status: 'delivered' };
+                                break;
+                            }
+                        }
+                        return [...newMessages, newMsg];
+                    });
                     scrollToBottom();
                 } else if (data.type === 'error') {
                     console.error("WS Error:", data.message || "Unknown error");
@@ -209,7 +228,8 @@ const Chat = () => {
             id: Date.now(), // temp id
             role: 'user',
             content: text,
-            created_at: new Date().toISOString()
+            created_at: new Date().toISOString(),
+            status: 'sent'
         };
         setMessages(prev => [...prev, userMsg]);
         setInputValue('');
@@ -228,9 +248,9 @@ const Chat = () => {
     // Handled explicitly in socket.onmessage and fetchHistory
 
     return (
-        <div className="flex flex-col h-screen bg-slate-950 text-gray-100 overflow-hidden">
+        <div className="flex flex-col h-[100dvh] bg-slate-950 text-gray-100 overflow-hidden fixed inset-0">
             {/* Header */}
-            <div className="bg-slate-900 border-b border-slate-800 p-3 flex items-center justify-between shrink-0 z-50 shadow-lg sticky top-0">
+            <div className="bg-slate-900 border-b border-slate-800 p-3 flex items-center justify-between shrink-0 z-50 shadow-lg">
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" onClick={() => navigate('/dashboard')} className="p-2 w-10 h-10 rounded-full flex items-center justify-center hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
                         <ArrowLeft className="w-5 h-5" />
@@ -304,17 +324,17 @@ const Chat = () => {
                                         </div>
                                     )}
 
-                                    <div className="pr-12 md:pr-14">
+                                    <div className={`${isUser ? 'pr-14' : 'pr-10'} pb-1`}>
                                         {isUser ? (
                                             <p className="whitespace-pre-wrap leading-relaxed text-[15px]">{msg.content}</p>
                                         ) : (
                                             <div className="prose prose-sm prose-invert max-w-none text-[15px] leading-relaxed
-                                                prose-p:my-1.5 prose-p:leading-relaxed
+                                                prose-p:my-1 prose-p:leading-relaxed
                                                 prose-strong:text-yellow-400 prose-strong:font-semibold
-                                                prose-ul:my-2 prose-ul:ml-4 prose-ul:list-disc
-                                                prose-ol:my-2 prose-ol:ml-4 prose-ol:list-decimal
+                                                prose-ul:my-1 prose-ul:ml-4 prose-ul:list-disc
+                                                prose-ol:my-1 prose-ol:ml-4 prose-ol:list-decimal
                                                 prose-li:my-0.5 prose-li:marker:text-yellow-500/70
-                                                prose-headings:text-yellow-400 prose-headings:font-semibold prose-headings:my-2
+                                                prose-headings:text-yellow-400 prose-headings:font-semibold prose-headings:my-1
                                                 prose-code:bg-slate-700/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-yellow-300
                                                 prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-700 prose-pre:rounded-lg
                                             ">
@@ -323,12 +343,16 @@ const Chat = () => {
                                         )}
                                     </div>
 
-                                    <div className="absolute bottom-1 right-2 flex items-center gap-1 select-none">
-                                        <p className={`text-[10px] opacity-60 font-medium ${isUser ? 'text-yellow-100' : 'text-slate-400'}`}>
+                                    <div className="absolute bottom-1 right-2 flex items-center gap-1 select-none pointer-events-none">
+                                        <p className={`text-[10px] opacity-70 font-medium whitespace-nowrap ${isUser ? 'text-yellow-100' : 'text-slate-400'}`}>
                                             {msg.created_at ? new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) : 'just now'}
                                         </p>
                                         {isUser && (
-                                            <CheckCheck className="w-3.5 h-3.5 text-blue-300 opacity-80" />
+                                            msg.status === 'delivered' ? (
+                                                <CheckCheck className="w-3.5 h-3.5 text-sky-400 opacity-100" />
+                                            ) : (
+                                                <Check className="w-3.5 h-3.5 text-slate-400 opacity-70" />
+                                            )
                                         )}
                                     </div>
                                 </div>

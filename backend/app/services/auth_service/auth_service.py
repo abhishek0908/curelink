@@ -32,6 +32,7 @@ class AuthService:
                 auth_user = self.db.exec(stmt).first()
 
                 if not auth_user:
+                    logger.info(f"New user login detected: {email}")
                     auth_user = AuthUser(
                         email=email,
                         is_verified=False,
@@ -39,11 +40,15 @@ class AuthService:
                     )
                     self.db.add(auth_user)
                     self.db.flush()  
+                    logger.info(f"AuthUser created with ID: {auth_user.id}")
 
                     profile = self.user_service.ensure_user_state(auth_user.id)
+                    logger.info("User onboarding state initialized")
 
                 else:
+                    logger.info(f"Existing user login: {email} (ID: {auth_user.id})")
                     profile = self.user_service.ensure_user_state(auth_user.id)
+                    logger.info("User onboarding state retrieved")
 
         except Exception as e:
             logger.error(f"Login error: {str(e)}")

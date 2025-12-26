@@ -5,10 +5,10 @@ from pydantic import Field
 class Settings(BaseSettings):
     DATABASE_URL: str 
     DEBUG: bool 
-    CACHE_MESSAGE_EXPIRE: int
+    REDIS_CACHE_EXPIRE: int
     REDIS_HOST: str
     REDIS_PORT: int
-    CHAT_CACHE_LIMIT: int 
+    CHAT_CACHE_LIMIT: int
     MAX_SUMMARY_WORDS: int 
     LONG_TERM_TRIGGER_COUNT: int 
     OPENROUTER_API_KEY: str
