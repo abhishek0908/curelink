@@ -16,7 +16,9 @@ const Dashboard = () => {
         const fetchProfile = async () => {
             try {
                 const res = await api.get('/onboarding');
-                setProfile(res.data);
+                if (res.data.success) {
+                    setProfile(res.data.data);
+                }
             } catch {
                 // ignore
             }

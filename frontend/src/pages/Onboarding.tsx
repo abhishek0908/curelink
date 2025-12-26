@@ -6,7 +6,7 @@ import TagInput from '../components/TagInput';
 import { PageTransition } from '../components/PageTransition';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
-import { ChevronRight, Save } from 'lucide-react';
+import { ChevronRight, Save, X } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 interface OnboardingData {
@@ -44,8 +44,8 @@ const Onboarding = () => {
         const fetchData = async () => {
             try {
                 const response = await api.get('/onboarding');
-                if (response.data && Object.keys(response.data).length > 0) {
-                    const d = response.data;
+                if (response.data.success && response.data.data) {
+                    const d = response.data.data;
                     setFormData({
                         full_name: d.full_name || '',
                         age: d.age || '',
@@ -224,6 +224,15 @@ const Onboarding = () => {
                         </motion.div>
 
                         <div className="flex justify-end pt-6 gap-3 border-t border-slate-800">
+                            {mode === 'update' && (
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    onClick={() => navigate(-1)}
+                                >
+                                    <X className="mr-2 w-4 h-4" /> Close
+                                </Button>
+                            )}
 
                             <Button
                                 type="submit"

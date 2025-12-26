@@ -1,0 +1,27 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+python-multipart
+python-dotenv
+
+# Database
+sqlmodel
+psycopg2-binary
+alembic
+
+# Redis
+redis
+
+# Authentication
+python-jose[cryptography]
+email-validator
+
+# LLM
+langchain-openai
+openai
+
+# Validation & Settings
+pydantic
+pydantic-settings
+httpx
+jwt

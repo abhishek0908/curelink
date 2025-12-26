@@ -23,6 +23,14 @@ api.interceptors.response.use(
             localStorage.removeItem('user');
             window.location.href = '/login';
         }
+        // Extract APIError message if available
+        const apiError = error.response?.data?.error;
+        if (apiError) {
+            error.message = apiError.message;
+        } else if (error.response?.data?.message) {
+            // Fallback to top-level message if present
+            error.message = error.response.data.message;
+        }
         return Promise.reject(error);
     }
 );

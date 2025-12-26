@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../lib/axios';
 import { Button } from '../components/ui/Button';
@@ -6,6 +6,7 @@ import { ArrowLeft, Send, MoreVertical, Phone, Video } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCheck, Plus, Smile, Mic } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 // Types
 interface Message {
@@ -17,7 +18,7 @@ interface Message {
 }
 
 interface WSMessage {
-    type: 'history' | 'message';
+    type: 'history' | 'message' | 'error';
     role?: 'user' | 'assistant';
     content?: string | any; // history content is list
     message?: string; // from API
@@ -44,7 +45,7 @@ const Chat = () => {
     const prevScrollHeightRef = useRef<number>(0);
 
     // Fetch history
-    const fetchHistory = async (currentOffset: number) => {
+    const fetchHistory = useCallback(async (currentOffset: number) => {
         try {
             setIsLoadingHistory(true);
             const response = await api.get('/chat/history', {
@@ -54,7 +55,8 @@ const Chat = () => {
                 }
             });
 
-            const data = response.data;
+            const apiRes = response.data;
+            const data = apiRes.data || [];
             if (data.length < limit) {
                 setHasMore(false);
             }
@@ -85,12 +87,11 @@ const Chat = () => {
         } finally {
             setIsLoadingHistory(false);
         }
-    };
+    }, [limit]);
 
-    // Load initial history
-    useEffect(() => {
-        fetchHistory(0);
-    }, []);
+    // Initial history is loaded via WS onopen trigger
+    // keeping this commented out or removing it entirely
+
 
     // Scroll handler for lazy loading
     const handleScroll = () => {
@@ -105,57 +106,81 @@ const Chat = () => {
         }
     };
 
-    // Initial connection
+    // Initial connection logic with Auto-Reconnect
     useEffect(() => {
         if (!user?.user_id) return;
 
-        // Convert HTTP URL to WS URL
-        const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-        const wsProtocol = baseUrl.startsWith('https') ? 'wss' : 'ws';
-        const wsHost = baseUrl.replace(/^https?:\/\//, '');
-        const token = localStorage.getItem('token');
-        const url = `${wsProtocol}://${wsHost}/ws/chat?token=${token}`;
+        let socket: WebSocket | null = null;
+        let reconnectTimer: ReturnType<typeof setTimeout>;
+        let isMounted = true;
 
-        const socket = new WebSocket(url);
+        const connect = () => {
+            if (!isMounted) return;
 
-        socket.onopen = () => {
-            console.log('Connected to chat');
-            setIsConnected(true);
+            // Convert HTTP URL to WS URL
+            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            const wsProtocol = baseUrl.startsWith('https') ? 'wss' : 'ws';
+            const wsHost = baseUrl.replace(/^https?:\/\//, '');
+            const token = localStorage.getItem('token');
+            const url = `${wsProtocol}://${wsHost}/ws/chat?token=${token}`;
+
+            socket = new WebSocket(url);
+
+            socket.onopen = () => {
+                if (!isMounted) return;
+                console.log('Connected to chat');
+                setIsConnected(true);
+                // Auto-refresh chat on connection (handles initial load & reconnection)
+                fetchHistory(0);
+            };
+
+            socket.onmessage = (event) => {
+                if (!isMounted) return;
+                const data: WSMessage = JSON.parse(event.data);
+
+                if (data.type === 'history' && data.messages) {
+                    console.log("WS History received (ignoring in favor of API)");
+                } else if (data.type === 'message') {
+                    setIsTyping(false);
+                    const newMsg: Message = {
+                        id: Date.now(),
+                        role: data.role as 'user' | 'assistant',
+                        content: data.content as string,
+                        created_at: new Date().toISOString()
+                    };
+                    setMessages(prev => [...prev, newMsg]);
+                    scrollToBottom();
+                } else if (data.type === 'error') {
+                    console.error("WS Error:", data.message || "Unknown error");
+                    setIsTyping(false);
+                }
+            };
+
+            socket.onclose = () => {
+                if (!isMounted) return;
+                console.log('Disconnected. Attempting to reconnect in 3s...');
+                setIsConnected(false);
+
+                // Try to reconnect
+                reconnectTimer = setTimeout(() => {
+                    connect();
+                }, 3000);
+            };
+
+            ws.current = socket;
         };
 
-        socket.onmessage = (event) => {
-            const data: WSMessage = JSON.parse(event.data);
-
-            if (data.type === 'history' && data.messages) {
-                // Ignore WS history if we are using API for history
-                // or merge if needed. For now, let's rely on API for reliability/IDs
-                // But WS might have "pending" messages? 
-                // Let's just log it for now
-                console.log("WS History received (ignored in favor of API):", data.messages);
-            } else if (data.type === 'message') {
-                setIsTyping(false);
-                const newMsg: Message = {
-                    id: Date.now(),
-                    role: data.role as 'user' | 'assistant',
-                    content: data.content as string,
-                    created_at: new Date().toISOString()
-                };
-                setMessages(prev => [...prev, newMsg]);
-                scrollToBottom();
-            }
-        };
-
-        socket.onclose = () => {
-            console.log('Disconnected');
-            setIsConnected(false);
-        };
-
-        ws.current = socket;
+        connect();
 
         return () => {
-            socket.close();
+            isMounted = false;
+            clearTimeout(reconnectTimer);
+            if (socket) {
+                socket.onclose = null; // Prevent reconnect loop on unmount
+                socket.close();
+            }
         };
-    }, [user?.user_id]);
+    }, [user?.user_id, fetchHistory]);
 
     const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
         // slight delay to ensure render
@@ -271,7 +296,22 @@ const Chat = () => {
                                     )}
 
                                     <div className="pr-12 md:pr-14">
-                                        <p className="whitespace-pre-wrap leading-relaxed text-[15px]">{msg.content}</p>
+                                        {isUser ? (
+                                            <p className="whitespace-pre-wrap leading-relaxed text-[15px]">{msg.content}</p>
+                                        ) : (
+                                            <div className="prose prose-sm prose-invert max-w-none text-[15px] leading-relaxed
+                                                prose-p:my-1.5 prose-p:leading-relaxed
+                                                prose-strong:text-yellow-400 prose-strong:font-semibold
+                                                prose-ul:my-2 prose-ul:ml-4 prose-ul:list-disc
+                                                prose-ol:my-2 prose-ol:ml-4 prose-ol:list-decimal
+                                                prose-li:my-0.5 prose-li:marker:text-yellow-500/70
+                                                prose-headings:text-yellow-400 prose-headings:font-semibold prose-headings:my-2
+                                                prose-code:bg-slate-700/50 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-yellow-300
+                                                prose-pre:bg-slate-900 prose-pre:border prose-pre:border-slate-700 prose-pre:rounded-lg
+                                            ">
+                                                <ReactMarkdown>{msg.content}</ReactMarkdown>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="absolute bottom-1 right-2 flex items-center gap-1 select-none">
