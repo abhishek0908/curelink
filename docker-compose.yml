@@ -58,9 +58,13 @@ services:
 
   # React Frontend
   frontend:
+    environment:
+      - VITE_API_URL=/api
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=/api
     container_name: curelink_frontend
     ports:
       - "80:80"

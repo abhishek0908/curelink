@@ -117,14 +117,23 @@ const Chat = () => {
         const connect = () => {
             if (!isMounted) return;
 
-            // Convert HTTP URL to WS URL
-            const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-            const wsProtocol = baseUrl.startsWith('https') ? 'wss' : 'ws';
-            const wsHost = baseUrl.replace(/^https?:\/\//, '');
             const token = localStorage.getItem('token');
-            const url = `${wsProtocol}://${wsHost}/ws/chat?token=${token}`;
 
-            socket = new WebSocket(url);
+            // Determine WS URL
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+            let wsUrl = '';
+
+            if (apiUrl.startsWith('http')) {
+                const wsProtocol = apiUrl.startsWith('https') ? 'wss' : 'ws';
+                const wsHost = apiUrl.replace(/^https?:\/\//, '');
+                wsUrl = `${wsProtocol}://${wsHost}/ws/chat?token=${token}`;
+            } else {
+                // Relative URL case (e.g. "/api") - Connect to same host
+                const wsProtocol = window.location.protocol === 'https:' ? 'wss' : 'ws';
+                wsUrl = `${wsProtocol}://${window.location.host}/ws/chat?token=${token}`;
+            }
+
+            socket = new WebSocket(wsUrl);
 
             socket.onopen = () => {
                 if (!isMounted) return;
@@ -221,7 +230,7 @@ const Chat = () => {
     return (
         <div className="flex flex-col h-screen bg-slate-950 text-gray-100 overflow-hidden">
             {/* Header */}
-            <div className="bg-slate-900 border-b border-slate-800 p-3 flex items-center justify-between shrink-0 z-10 shadow-lg">
+            <div className="bg-slate-900 border-b border-slate-800 p-3 flex items-center justify-between shrink-0 z-50 shadow-lg sticky top-0">
                 <div className="flex items-center gap-2">
                     <Button variant="ghost" onClick={() => navigate('/dashboard')} className="p-2 w-10 h-10 rounded-full flex items-center justify-center hover:bg-slate-800 text-slate-400 hover:text-white transition-colors">
                         <ArrowLeft className="w-5 h-5" />
