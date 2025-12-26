@@ -1,46 +1,53 @@
 # CureLink: Modern AI Healthcare Assistant
 
-CureLink is a high-performance, real-time consultation platform that uses AI to help doctors and patients stay connected. It features a WhatsApp-style chat interface, clinical-grade memory, and personalized AI guidance based on user health profiles.
-
-## 📚 Project Documentation
-
-We have split our documentation into three main areas to help you navigate the system:
-
-### 1. [High-Level Design (HLD)](./backend/HLD.md)
-*The "Why" and the Logic.*
-Read this for the birds-eye view of our architecture, how data flows through the system, and our future roadmap for scaling to thousands of users.
-
-### 2. [Low-Level Design (LLD)](./backend/LLD.md)
-*The "How" and the Blueprint.*
-Read this for the technical details: our database schemas, service-by-service breakdowns, folder structure, and the specific rules our code follows.
-
-### 3. [Frontend Documentation](./frontend/README.md)
-*The "Look" and the Experience.*
-Read this for details on how we built the responsive UI, our theme system, and how we handle real-time WebSockets with "Protocol-Aware" logic.
+CureLink is designed to bridge the gap between doctors and patients through a fast, intelligent, and clinical-grade AI platform. It’s more than just a chat app; it’s a medical companion that remembers history, understands clinical context, and provides safe, personalized guidance.
 
 ---
 
-## 🚀 Quick Start (Docker)
+## 📚 Explore the Documentation
 
-The fastest way to get CureLink running locally is using Docker Compose.
+To keep things organized, we've broken down our documentation into three core sections. Whether you're interested in the business logic, the technical blueprint, or the user experience, you'll find it here:
 
+### 🧠 [Backend Service: Logic & Intelligence](./backend/README.md)
+This is where the "heavy lifting" happens. It contains everything about our FastAPI server, database security, and the AI logic that powers our consultant, **Disha**.
+- **Special Guides**: [High-Level Design (HLD)](./backend/HLD.md) | [Low-Level Design (LLD)](./backend/LLD.md)
+
+### 🎨 [Frontend App: The User Experience](./frontend/README.md)
+Explore how we built our sleek, "WhatsApp-style" chat interface. This README covers our theme system, responsive mobile layouts, and how we handle real-time WebSockets.
+
+---
+
+## 🚀 Getting Started (Fast)
+
+We’ve dockerized the entire setup so you can get a production-ready environment running in seconds.
+
+### 1. Prerequisites
+- Docker & Docker Compose installed.
+- An API Key from **OpenRouter** (to power the AI).
+
+### 2. Setup Environment
+Before launching, you need to configure your credentials:
 ```bash
-# Clone and enter the project
-cd curelink
+# Copy the example file to production
+cp backend/.env.example backend/.env.production
+```
+Open `backend/.env.production` and fill in your `OPENROUTER_API_KEY`. (You can also adjust your database and Redis settings here).
 
-# Build and start all services
+### 3. Launch with Docker
+```bash
+# Build and start everything in the background
 docker compose up --build -d
 ```
 
-Once running, you can access:
-- **Frontend**: [http://localhost](http://localhost)
-- **API Documentation**: [http://localhost:8000/docs](http://localhost:8000/docs)
+### 4. Access the App
+- **The Chat Interface**: [http://localhost](http://localhost)
+- **Interactive API Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ---
 
-## 🛠️ Tech Stack
+## 🛠️ The Technology Behind CureLink
 
-- **Frontend**: React, TypeScript, TailwindCSS, Framer Motion.
-- **Backend**: FastAPI, SQLModel (PostgreSQL), Redis.
-- **Inference**: OpenRouter (GPT/Claude) with structured clinical prompts.
-- **Deployment**: Nginx, Docker.
+- **Fast & Reliable**: Built with **FastAPI** (Python 3.11) and **React** (TypeScript).
+- **Clinical Memory**: Uses **PostgreSQL** for permanent records and **Redis** for lightning-fast conversation context.
+- **Smart Conversations**: Integrated with **OpenRouter**, allowing us to use the world's most advanced AI models (GPT-4/Claude) with clinical guardrails.
+- **Production-Ready**: Served behind an **Nginx** reverse proxy and fully containerized with **Docker**.
