@@ -1,7 +1,5 @@
 # CureLink: Modern AI Healthcare Assistant
 
-CureLink is designed to bridge the gap between doctors and patients through a fast, intelligent, and clinical-grade AI platform. It’s more than just a chat app; it’s a medical companion that remembers history, understands clinical context, and provides safe, personalized guidance.
-
 ---
 
 ## 📚 Explore the Documentation
@@ -9,7 +7,7 @@ CureLink is designed to bridge the gap between doctors and patients through a fa
 To keep things organized, we've broken down our documentation into three core sections. Whether you're interested in the business logic, the technical blueprint, or the user experience, you'll find it here:
 
 ### 🧠 [Backend Service: Logic & Intelligence](./backend/README.md)
-This is where the "heavy lifting" happens. It contains everything about our FastAPI server, database security, and the AI logic that powers our consultant, **Disha**.
+This is where the "heavy lifting" happens. It contains everything about our FastAPI server, database , and the AI logic that powers our consultant, **Disha**.
 - **Special Guides**: [High-Level Design (HLD)](./backend/HLD.md) | [Low-Level Design (LLD)](./backend/LLD.md)
 
 ### 🎨 [Frontend App: The User Experience](./frontend/README.md)
